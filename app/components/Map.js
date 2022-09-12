@@ -15,52 +15,59 @@ const Map = () => {
   const destination = useSelector(selectDestination);
   const mapRef = useRef(null);
   const dispatch = useDispatch();
+  console.log(destination);
 
   useEffect(() => {
     if (!origin || !destination) return;
-    mapRef.current.fitToSuppliedMarkers(["origin", "destination"], {
-      edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
-    });
+    let time = setTimeout(() => {
+      mapRef.current.fitToSuppliedMarkers(["origin", "destination"], {
+        edgePadding: { top: 80, right: 80, bottom: 80, left: 80 },
+      });
+    }, 100);
+    return () => {
+      clearTimeout(time);
+    };
   }, [origin, destination]);
 
   useEffect(() => {
-    const getTravelTime = async () => {
-      await fetch(
-        `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${origin.description}&destinations=${destination.description}&key=${GOOGLE_MAPS_API_KEY}`
-      )
-        .then((res) => res.json())
-        .then((data) =>
-          dispatch(setTravelTimeInformation(data.rows[0].elements[0]))
-        );
-    };
+    if (!origin || !destination) return;
     getTravelTime();
   }, [origin, destination, GOOGLE_MAPS_API_KEY]);
+
+  const getTravelTime = async () => {
+    const URL = `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${origin.description}&destinations=${destination.description}&key=${GOOGLE_MAPS_API_KEY}`;
+    const data = await fetch(URL).then((response) => response.json());
+    if (data.status !== "OK") return alert(data.error_message);
+    dispatch(setTravelTimeInformation(data.rows[0].elements[0]));
+  };
   return (
     <MapView
       ref={mapRef}
-      style={tw`flex-1`}
+      style={tw`flex-1 relative z-20`}
       mapType="mutedStandard"
       initialRegion={{
-        latitude: origin.location.lat,
-        longitude: origin.location.lng,
+        latitude: origin?.location.lat,
+        longitude: origin?.location.lng,
         latitudeDelta: 0.005,
         longitudeDelta: 0.005,
       }}
     >
       {origin && destination && (
         <MapViewDirections
-          origin={origin.description}
-          destination={destination.description}
+          origin={origin?.description}
+          destination={destination?.description}
+          lineDashPattern={[0]}
           apikey={GOOGLE_MAPS_API_KEY}
           strokeWidth={3}
-          strokeColor="green"
+          strokeColor="black"
+          onError={(error) => console.log("Directions error: ", error)}
         />
       )}
       {origin?.location && (
         <Marker
           coordinate={{
-            latitude: origin.location.lat,
-            longitude: origin.location.lng,
+            latitude: origin?.location.lat,
+            longitude: origin?.location.lng,
           }}
           title="Origin"
           description={origin.description}
@@ -70,11 +77,11 @@ const Map = () => {
       {destination?.location && (
         <Marker
           coordinate={{
-            latitude: destination.location.lat,
-            longitude: destination.location.lng,
+            latitude: destination?.location.lat,
+            longitude: destination?.location.lng,
           }}
           title="Destination"
-          description={destination.description}
+          description={destination?.description}
           identifier="destination"
         />
       )}

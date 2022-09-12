@@ -1,5 +1,4 @@
 import { GOOGLE_MAPS_API_KEY } from "@env";
-import React from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -25,14 +24,9 @@ const HomeScreen = () => {
           }}
         />
         <GooglePlacesAutocomplete
-          styles={{
-            container: {
-              flex: 0,
-            },
-            textInput: {
-              fontSize: 18,
-            },
-          }}
+          placeholder="Where from?"
+          nearbyPlacesAPI="GooglePlacesSearch"
+          debounce={400}
           onPress={(data, details = null) => {
             dispatch(
               setOrigin({
@@ -42,16 +36,23 @@ const HomeScreen = () => {
             );
             dispatch(setDestination(null));
           }}
-          fetchDetails={true}
-          enablePoweredByContainer={false}
           minLength={2}
+          fetchDetails={true}
+          returnKeyType={"search"}
+          onFail={(error) => console.error(error)}
           query={{
             key: GOOGLE_MAPS_API_KEY,
             language: "en",
           }}
-          placeholder="Where From?"
-          nearbyPlacesAPI="googlePlaceSearch"
-          debounce={400}
+          styles={{
+            container: {
+              flex: 0,
+            },
+            textInput: {
+              fontSize: 15,
+            },
+          }}
+          enablePoweredByContainer={false}
         />
         <NavOPtions />
         <NavFavorites className={"py-5 px-2"} />

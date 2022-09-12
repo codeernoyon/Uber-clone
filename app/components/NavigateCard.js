@@ -1,6 +1,6 @@
 import { GOOGLE_MAPS_API_KEY } from "@env";
 import { useNavigation } from "@react-navigation/native";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { Icon } from "react-native-elements";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,31 +17,42 @@ const NavigateCard = () => {
       <Text style={tw`text-center text-xl pb-5`}>Good Morning Noyon</Text>
       <View style={tw`border-t border-gray-200 flex-shrink`}>
         <GooglePlacesAutocomplete
-          // styles={toInputStyle}
-          placeholder="Where From?"
-          styles={toInputStyle}
-          onPress={(data, details = null) => {
+          placeholder="Where to?"
+          nearbyPlacesAPI="GooglePlacesSearch"
+          debounce={400}
+          onPress={(data, details = "") => {
             dispatch(
               setDestination({
                 location: details.geometry.location,
                 description: data.description,
               })
             );
-            navigation.navigate("RideOptionsCard");
           }}
-          fetchDetails={true}
-          enablePoweredByContainer={false}
           minLength={2}
+          fetchDetails={true}
+          returnKeyType={"search"}
+          onFail={(error) => console.error(error)}
           query={{
             key: GOOGLE_MAPS_API_KEY,
             language: "en",
           }}
-          nearbyPlacesAPI="googlePlaceSearch"
-          debounce={400}
+          styles={{
+            container: {
+              flex: 0,
+              paddingTop: 20,
+              paddingRight: 20,
+              paddingLeft: 20,
+            },
+            textInput: {
+              fontSize: 15,
+              backgroundColor: "#ecf0f1",
+            },
+          }}
+          enablePoweredByContainer={false}
         />
       </View>
       <View style={tw`flex-1 `}>
-        <NavFavorites className={"py-5 px-3"} />
+        <NavFavorites className={"pb-5 pt-5 px-3"} />
         <View
           style={tw`pl-2 flex-1 absolute bottom-5 flex-row justify-center items-center`}
         >
@@ -70,20 +81,3 @@ const NavigateCard = () => {
 };
 
 export default NavigateCard;
-
-const toInputStyle = StyleSheet.create({
-  container: {
-    backgroundColor: "white",
-    paddingTop: 20,
-    flex: 0,
-  },
-  textInput: {
-    backgroundColor: "#DDDDDF",
-    padding: 2,
-    fontSize: 18,
-  },
-  textInputContainer: {
-    paddingHorizontal: 10,
-    paddingBottom: 0,
-  },
-});

@@ -19,7 +19,16 @@ const RideOptionCard = () => {
   const navigation = useNavigation();
   const [selected, setSelected] = useState(null);
   const travelTimeInformation = useSelector(selectTravelTimeInformation);
-  const SUGA_CHAGE_RATE = 1.5;
+  const SEARCH_CHARGE_RATE = 1.5;
+
+  const travelConst = (item) => {
+    return (
+      (travelTimeInformation?.duration?.value *
+        SEARCH_CHARGE_RATE *
+        item?.multiplier) /
+      100
+    ).toFixed(2);
+  };
 
   return (
     <SafeAreaView style={tw`bg-white h-full`}>
@@ -63,7 +72,7 @@ const RideOptionCard = () => {
             </View>
             <View>
               <Text>
-                {new Intl.NumberFormat("en-gb", {
+                {/* {new Intl.NumberFormat("en-gb", {
                   style: "currency",
                   currency: "GBP",
                 }).format(
@@ -71,7 +80,8 @@ const RideOptionCard = () => {
                     SUGA_CHAGE_RATE *
                     multiplier) /
                     100
-                )}
+                )} */}
+                ${travelConst(item)}
               </Text>
             </View>
           </TouchableOpacity>
@@ -79,6 +89,7 @@ const RideOptionCard = () => {
       />
       <View>
         <TouchableOpacity
+          onPress={() => navigation.navigate("SuccessScreen")}
           disabled={!selected}
           style={tw`bg-black m-4 py-3 rounded-full ${
             !selected && "bg-gray-300"

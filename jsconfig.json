@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["app/components/*"]
+    }
+  },
+  "include": ["react-native", "app/**/*.ts", "app/**/*.tsx", "app/**/*.js"],
+  "exclude": ["node_modules"]
+}

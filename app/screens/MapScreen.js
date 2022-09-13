@@ -1,5 +1,4 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import tw from "twrnc";
@@ -11,7 +10,7 @@ const MapScreen = () => {
   const Stack = createNativeStackNavigator();
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="relative">
       <View style={tw`h-1/2`}>
         <Map />
       </View>

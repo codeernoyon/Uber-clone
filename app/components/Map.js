@@ -15,7 +15,6 @@ const Map = () => {
   const destination = useSelector(selectDestination);
   const mapRef = useRef(null);
   const dispatch = useDispatch();
-  console.log(destination);
 
   useEffect(() => {
     if (!origin || !destination) return;

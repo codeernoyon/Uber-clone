@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import {
+  Alert,
   FlatList,
   Image,
   StyleSheet,
@@ -30,6 +31,17 @@ const RideOptionCard = () => {
     ).toFixed(2);
   };
 
+  const onChose = () => {
+    if (!selected) return Alert.alert("Please select a ride option");
+    navigation.navigate("SuccessScreen", {
+      data: {
+        ...selected,
+        distance: travelTimeInformation?.distance.text,
+        time: travelTimeInformation?.duration.text,
+        price: travelConst(selected),
+      },
+    });
+  };
   return (
     <SafeAreaView style={tw`bg-white h-full`}>
       <View style={tw`flex-row px-5 items-center`}>
@@ -89,11 +101,11 @@ const RideOptionCard = () => {
       />
       <View>
         <TouchableOpacity
-          onPress={() => navigation.navigate("SuccessScreen")}
           disabled={!selected}
           style={tw`bg-black m-4 py-3 rounded-full ${
             !selected && "bg-gray-300"
           }`}
+          onPress={onChose}
         >
           <Text style={tw`text-white text-center font-semibold text-[16px]`}>
             Choose {selected?.title}
